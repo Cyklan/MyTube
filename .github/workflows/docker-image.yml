@@ -22,7 +22,7 @@ jobs:
         password: ${{ env.PASSWORD }}
     
     - name: Build nginx
-      uses: docker/build-push-action@3.2.0
+      uses: docker/build-push-action@v3.2.0
       with:
         context: nginx
         file: nginx/Dockerfile
@@ -30,7 +30,7 @@ jobs:
         tags: mytube_nginx:$(date +%s)
         
     - name: Build web
-      uses: docker/build-push-action@3.2.0
+      uses: docker/build-push-action@v3.2.0
       with:
         context: web
         file: web/Dockerfile
