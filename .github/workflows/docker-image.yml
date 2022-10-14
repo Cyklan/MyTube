@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Get the time :)
+      id: date
+      run: echo "::set-output name=date::$(date +'%s')"
+    
     - name: Checkout Repository
       uses: actions/checkout@v3
       
@@ -27,7 +31,7 @@ jobs:
         context: nginx
         file: nginx/Dockerfile
         push: true
-        tags: mytube_nginx:$(date +%s)
+        tags: mytube_nginx:${{ steps.date.outputs.date }}
         
     - name: Build web
       uses: docker/build-push-action@v3.2.0
@@ -35,4 +39,4 @@ jobs:
         context: web
         file: web/Dockerfile
         push: true
-        tags: mytube_web:$(date +%s)
+        tags: mytube_web:${{ steps.date.outputs.date }}
