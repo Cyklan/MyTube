@@ -32,11 +32,13 @@ services:
       - web-app
 
   mysql:
-    build: ./mysql
+    image: mysql:8
     restart: always
 
     volumes:
-      - database:/var/lib/mysql/data
+      - database:/var/lib/mysql
+      # init scripts go below here
+      - "./mysql/init.sql:/docker-entrypoint-initdb.d/1.sql"
     
     environment:
       - MYSQL_DATABASE=my_tube
