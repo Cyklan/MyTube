@@ -17,7 +17,7 @@ services:
     volumes:
       - ./web:/app
 
-    links:
+    # links:
 
   # Proxy for different micro services
   nginx:
