@@ -29,7 +29,7 @@ jobs:
       id: meta-nginx
       uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
       with:
-        images: ghcr.io/mytube_nginx
+        images: ghcr.io/cyklan/mytube_nginx
     
     - name: Build nginx
       uses: docker/build-push-action@v3.2.0
@@ -40,11 +40,11 @@ jobs:
         tags: ${{ steps.meta-nginx.outputs.tags }}
         labels: ${{ steps.meta-nginx.outputs.labels }}
         
-    - name: Extract metadata (tags, labels) Nginx image
+    - name: Extract metadata (tags, labels) Web image
       id: meta-web
       uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
       with:
-        images: ghcr.io/mytube_web 
+        images: ghcr.io/cyklan/mytube_web 
         
     - name: Build web
       uses: docker/build-push-action@v3.2.0
