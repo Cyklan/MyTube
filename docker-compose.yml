@@ -1,0 +1,49 @@
+version: '3'
+
+volumes:
+  database:
+
+
+services:
+
+  # Frontend with ISR
+  web-app:
+    build: ./web
+    restart: always
+    
+    expose:
+      - "3000"
+
+    volumes:
+      - ./web:/app
+
+    links:
+
+  # Proxy for different micro services
+  nginx:
+    build: ./nginx
+    restart: always
+
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    depends_on:
+      - web-app
+
+  mysql:
+    build: ./mysql
+    restart: always
+
+    volumes:
+      - database:/var/lib/mysql/data
+    
+    environment:
+      - MYSQL_DATABASE=my_tube
+      - MYSQL_ROOT_PASSWORD=startpw+1
+
+    expose:
+      - "3306"
+
+    ports:
+      - "3306:3306"

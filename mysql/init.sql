@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS my_tube;
+USE my_tube;
