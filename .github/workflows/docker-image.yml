@@ -25,13 +25,26 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_PAT }}
     
+    - name: Extract metadata (tags, labels) Nginx image
+      id: meta-nginx
+      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      with:
+        images: ghcr.io/mytube_nginx
+    
     - name: Build nginx
       uses: docker/build-push-action@v3.2.0
       with:
         context: nginx
         file: nginx/Dockerfile
         push: true
-        tags: mytube_nginx:${{ steps.date.outputs.date }}
+        tags: ${{ steps.meta-nginx.outputs.tags }}
+        labels: ${{ steps.meta-nginx.outputs.labels }}
+        
+    - name: Extract metadata (tags, labels) Nginx image
+      id: meta-web
+      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      with:
+        images: ghcr.io/mytube_web 
         
     - name: Build web
       uses: docker/build-push-action@v3.2.0
@@ -39,4 +52,6 @@ jobs:
         context: web
         file: web/Dockerfile
         push: true
-        tags: mytube_web:${{ steps.date.outputs.date }}
+        tags: ${{ steps.meta-web.outputs.tags }}
+        labels: ${{ steps.meta-web.outputs.labels }}
+        
