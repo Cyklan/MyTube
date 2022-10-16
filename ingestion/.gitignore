@@ -7,3 +7,5 @@ ingestion
 *.dylib
 *.dll
 vls.log
+
+uploads
