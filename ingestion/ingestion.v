@@ -26,17 +26,18 @@ fn (mut app App) ingest_video() vweb.Result {
 	}
 
 	video := app.files["video"][0]
-	filename := video.filename + time.now().unix_time().str()
 
-	id := nanoid.generate(id_options, 12) or { return app.json({ "error": error.str() } )}
+	id := nanoid.generate(id_options, 12) or { return app.json({ "error": "couldn't generate id" } )}
 
-	mut file := os.create("./uploads/$filename") or { 
-		return app.json({"error": error.str()}) 
+	mut file := os.create("./uploads/$id") or { 
+		return app.json({"error": "couldn't create file"}) 
 	}
 	file.write(video.data.bytes()) or {
-		return app.json({"error": error.str()})
+		return app.json({"error": "couldn't write file"})
 	}
+
 	file.close()
+	
 	return app.json({
 		"id": id
 	})
