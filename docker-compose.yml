@@ -2,7 +2,7 @@ version: '3'
 
 volumes:
   database:
-
+  uploads:
 
 services:
 
@@ -17,8 +17,6 @@ services:
     volumes:
       - ./web:/app
 
-    # links:
-
   # Proxy for different micro services
   nginx:
     build: ./nginx
@@ -30,6 +28,7 @@ services:
     
     depends_on:
       - web-app
+      - ingestion
 
   mysql:
     image: mysql:8
@@ -49,3 +48,14 @@ services:
 
     ports:
       - "3306:3306"
+
+  # save uploaded videos
+  ingestion:
+    build: ./ingestion
+    restart: always
+
+    expose:
+      - "5000"
+
+    volumes: 
+      - uploads:/app/uploads

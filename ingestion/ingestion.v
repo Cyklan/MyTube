@@ -16,7 +16,7 @@ fn main() {
 	vweb.run(&App{}, 5000)
 }
 
-["/ingest"; post]
+["/"; post]
 fn (mut app App) ingest_video() vweb.Result {
 	if !("video" in app.files) {
 		app.set_status(400, "")
