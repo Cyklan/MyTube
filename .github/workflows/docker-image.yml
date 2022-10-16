@@ -54,4 +54,21 @@ jobs:
         push: true
         tags: ${{ steps.meta-web.outputs.tags }}
         labels: ${{ steps.meta-web.outputs.labels }}
+
+    - name: Extract metadata (tags, labels) Ingestion image
+      id: meta-web
+      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      with:
+        images: ghcr.io/cyklan/mytube_ingestion 
+        
+    - name: Build web
+      uses: docker/build-push-action@v3.2.0
+      with:
+        context: ingestion
+        file: ingestion/Dockerfile
+        push: true
+        tags: ${{ steps.meta-web.outputs.tags }}
+        labels: ${{ steps.meta-web.outputs.labels }}
+
+    
         
