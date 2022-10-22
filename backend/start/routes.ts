@@ -19,7 +19,19 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+import { Middlewares } from 'App/Middleware'
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
+
+Route.get('/auth', async () => {
+  return { hello: 'world' }
+}).middleware([Middlewares.Authentication])
+
+Route.get('/admin-auth', async () => {
+  return { hello: 'world' }
+}).middleware([Middlewares.AdministratorAuthentication])
+
+Route.post("login", 'AuthenticationController.login')
+Route.post("register", "AuthenticationController.register")

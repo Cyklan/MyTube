@@ -10,6 +10,7 @@
 */
 
 import Server from '@ioc:Adonis/Core/Server'
+import { Middlewares } from 'App/Middleware'
 
 /*
 |--------------------------------------------------------------------------
@@ -41,4 +42,7 @@ Server.middleware.register([
 | Route.get('dashboard', 'UserController.dashboard').middleware('auth')
 |
 */
-Server.middleware.registerNamed({})
+Server.middleware.registerNamed({
+  [Middlewares.Authentication]: () => import("App/Middleware/Authentication"),
+  [Middlewares.AdministratorAuthentication]: () => import("App/Middleware/AdministratorAuthentication")
+})
