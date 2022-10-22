@@ -2,7 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import type { RequestContract } from '@ioc:Adonis/Core/Request'
 import { ErrorResponse } from 'App/ResponseMessages/ErrorResponse'
 import { JwtPayload, verify } from 'jsonwebtoken'
-import db from 'App/Database'
+import { getUserById } from 'App/utils/getUser';
 import { User } from '@prisma/client'
 
 export default class Authentication {
@@ -17,7 +17,7 @@ export default class Authentication {
       return response.unauthorized(new ErrorResponse('Invalid JWT'))
     }
 
-    const user = await this.getUser(payload.sub!)
+    const user = await getUserById(payload.sub!)
     if (!user) {
       return response.unauthorized(new ErrorResponse('Unknown User'))
     }
@@ -25,6 +25,8 @@ export default class Authentication {
     if (!this.canAuthenticate(user)) {
       return response.unauthorized(new ErrorResponse('Unauthorized'))
     }
+
+    request["user"] = user
 
     await next()
   }
@@ -50,13 +52,5 @@ export default class Authentication {
     } catch {}
 
     return payload
-  }
-
-  protected getUser(id: string) {
-    return db.user.findFirst({
-      where: {
-        id,
-      },
-    })
   }
 }

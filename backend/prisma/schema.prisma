@@ -30,3 +30,8 @@ model Video {
   userId      String?
   createdAt   DateTime
 }
+
+model Settings {
+  id                 Int @id @default(autoincrement())
+  registrationActive Boolean
+}

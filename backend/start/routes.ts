@@ -33,5 +33,31 @@ Route.get('/admin-auth', async () => {
   return { hello: 'world' }
 }).middleware([Middlewares.AdministratorAuthentication])
 
-Route.post("login", 'AuthenticationController.login')
-Route.post("register", "AuthenticationController.register")
+//#region Authentication routes
+Route.post('login', 'AuthenticationController.login')
+Route.post('register', 'AuthenticationController.register')
+//#endregion
+
+//#region Admin routes
+Route.get("admin/get-accounts", "AdministratorController.getAccounts").middleware([
+  Middlewares.AdministratorAuthentication
+])
+Route.post('admin/create-account', 'AdministratorController.createAccount').middleware([
+  Middlewares.AdministratorAuthentication,
+])
+Route.delete('admin/delete-account', 'AdministratorController.deleteAccount').middleware([
+  Middlewares.AdministratorAuthentication,
+])
+Route.patch('admin/update-account-password', 'AdministratorController.updateAccountPassword').middleware([
+  Middlewares.AdministratorAuthentication,
+])
+Route.patch('admin/update-account-admin', 'AdministratorController.updateAccountAdmin').middleware([
+  Middlewares.AdministratorAuthentication,
+])
+Route.patch('admin/update-settings', 'AdministratorController.updateSettings').middleware([
+  Middlewares.AdministratorAuthentication,
+])
+Route.delete('admin/delete-video', 'AdministratorController.deleteVideo').middleware([
+  Middlewares.AdministratorAuthentication,
+])
+//#endregion

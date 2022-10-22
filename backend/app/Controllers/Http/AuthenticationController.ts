@@ -1,15 +1,18 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
-import bcrypt, { genSalt, hash } from 'bcrypt'
+import bcrypt from 'bcrypt'
 import db from 'App/Database'
 import { ErrorResponse } from 'App/ResponseMessages/ErrorResponse'
 import { sign } from 'jsonwebtoken'
+import { validatePasswordRequirements } from 'App/utils/validatePasswordRequirements'
+import { hashPassword } from 'App/utils/hashPassword'
+import { getUserByName } from 'App/utils/getUser';
 
 export default class AuthenticationController {
   public async login({ request, response }: HttpContextContract) {
     const { username, password } = request.only(['username', 'password'])
 
-    const user = await this.getUser(username)
+    const user = await getUserByName(username)
     if (!user) {
       return response.badRequest(new ErrorResponse('Invalid user or password'))
     }
@@ -23,20 +26,22 @@ export default class AuthenticationController {
   }
 
   public async register({ request, response }: HttpContextContract) {
+    const settings = await db.settings.findFirst()
+    if (!settings?.registrationActive) {
+      return response.badRequest(new ErrorResponse('Registration unavailable'))
+    }
+
     const { username, password } = request.only(['username', 'password'])
-    // https://ihateregex.io/expr/password/
-    const isValidPassword = new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/g).test(password)
-    if (!isValidPassword) {
+    if (!validatePasswordRequirements(password)) {
       return response.badRequest(new ErrorResponse('Thats some weak ass password')) // WAP - Cardi B
     }
-    
-    const user = await this.getUser(username)
+
+    const user = await getUserByName(username)
     if (user) {
       return response.badRequest(new ErrorResponse('Username already taken'))
     }
 
-    const salt = await genSalt(10)
-    const hashedPassword = await hash(password, salt)
+    const hashedPassword = await hashPassword(password)
 
     const registeredUser = await db.user.create({
       data: {
@@ -53,14 +58,6 @@ export default class AuthenticationController {
     const token = this.generateToken(userId)
     return response.json({
       token,
-    })
-  }
-
-  private getUser(username: string) {
-    return db.user.findFirst({
-      where: {
-        username,
-      },
     })
   }
 

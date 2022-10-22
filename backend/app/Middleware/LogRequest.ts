@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import type { RequestContract } from '@ioc:Adonis/Core/Request'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
+import { ErrorResponse } from 'App/ResponseMessages/ErrorResponse'
 import { logger } from '../Logging/Winston'
 
 export default class LogRequest {
@@ -13,11 +14,15 @@ export default class LogRequest {
     // code for middleware goes here. ABOVE THE NEXT CALL
     this.logRequest(request, messageNumber)
 
-    await next().catch(() => {
-      const message = 'An unkown error occured.'
-      this.logError(message, messageNumber)
-      response.abort(message, 500)
-    })
+    if (process.env.NODE_ENV === 'production') {
+      await next().catch(() => {
+        const message = 'An unknown error occured.'
+        this.logError(message, messageNumber)
+        response.status(500).json(new ErrorResponse(message))
+      })
+    } else if (process.env.NODE_ENV === "development") {
+      await next()
+    }
 
     response.response.on('finish', () => {
       this.logResponse(response, messageNumber)

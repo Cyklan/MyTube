@@ -66,8 +66,7 @@
 
 ## Backend
 
-- auth handler
-- admin actions
+- admin actions -> delete video
 - video ingestion / conversion
 - search
 - video crud api
