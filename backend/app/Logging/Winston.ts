@@ -1,8 +1,10 @@
 import winston from 'winston'
 import DailyRotateFile from 'winston-daily-rotate-file'
+const { combine, timestamp, json } = winston.format
 
 const logger = winston.createLogger({
   level: 'verbose',
+  format: combine(timestamp(), json()),
   transports: [
     new DailyRotateFile({
       datePattern: 'YYYY-MM-DD',
@@ -14,17 +16,4 @@ const logger = winston.createLogger({
   ],
 })
 
-const logRequest = (ip: string, method: string, url: string) => {
-  logger.info(`REQUEST: ${ip} - ${method} - ${url}`)
-}
-
-const logResponse = (ip: string, method: string, url: string, body?: object) => {
-  let message = `RESPONSE: ${ip} - ${method} - ${url}`
-  if (body) {
-    message += ` - BODY: ${JSON.stringify(body)}`
-  }
-
-  logger.info(message)
-}
-
-export { logRequest, logResponse }
+export { logger }

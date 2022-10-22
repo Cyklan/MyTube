@@ -19,9 +19,7 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-import { logRequest, logResponse } from 'App/Logging/Winston'
 
-Route.get('/', async ( { request } ) => {
-  logResponse(request.ip(), request.method(), request.url())
+Route.get('/', async () => {
   return { hello: 'world' }
 })
