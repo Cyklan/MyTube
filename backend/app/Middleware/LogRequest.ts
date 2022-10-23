@@ -2,10 +2,11 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import type { RequestContract } from '@ioc:Adonis/Core/Request'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
 import { ErrorResponse } from 'App/ResponseMessages/ErrorResponse'
-import { logger } from '../Logging/Winston'
+import { getLogger } from '../Logging/Winston'
 
 export default class LogRequest {
   private static messageNumber = 0
+  private logger = getLogger('HTTP')
 
   public async handle({ request, response }: HttpContextContract, next: () => Promise<void>) {
     const messageNumber = LogRequest.messageNumber
@@ -15,12 +16,13 @@ export default class LogRequest {
     this.logRequest(request, messageNumber)
 
     if (process.env.NODE_ENV === 'production') {
-      await next().catch(() => {
-        const message = 'An unknown error occured.'
-        this.logError(message, messageNumber)
-        response.status(500).json(new ErrorResponse(message))
-      })
-    } else if (process.env.NODE_ENV === "development") {
+      try {
+        await next()
+      } catch (error) {
+        this.logError({ error }, messageNumber)
+        response.status(500).json(new ErrorResponse(error.message))
+      }
+    } else if (process.env.NODE_ENV === 'development') {
       await next()
     }
 
@@ -36,7 +38,7 @@ export default class LogRequest {
     const body = request.body()
     const headers = request.headers()
 
-    logger.info(JSON.stringify({ ip, method, url, headers, body, messageNumber }))
+    this.logger.info(JSON.stringify({ ip, method, url, headers, body, messageNumber }))
   }
 
   private logResponse(responseContract: ResponseContract, messageNumber: number): void {
@@ -46,10 +48,10 @@ export default class LogRequest {
     const body = responseContract.getBody()
     const headers = responseContract.getHeaders()
 
-    logger.info(JSON.stringify({ statusCode, statusMessage, headers, body, messageNumber }))
+    this.logger.info(JSON.stringify({ statusCode, statusMessage, headers, body, messageNumber }))
   }
 
   private logError(error: any, messageNumber: number): void {
-    logger.error(JSON.stringify({ statusCode: 500, statusMessage: error, messageNumber }))
+    this.logger.error(JSON.stringify({ statusCode: 500, statusMessage: error, messageNumber }))
   }
 }

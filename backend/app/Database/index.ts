@@ -1,14 +1,15 @@
-import { PrismaClient } from "@prisma/client";
-import { logger } from 'App/Logging/Winston';
+import { PrismaClient } from '@prisma/client'
+import { getLogger } from 'App/Logging/Winston'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
+const logger = getLogger('DB')
 prisma.$use(async (params, next) => {
-    logger.info({ params });
+  logger.info({ params })
 
-    const result = await next(params);
-    logger.info({ result });
+  const result = await next(params)
+  logger.info({ result })
 
-    return result;
-});
+  return result
+})
 
-export default prisma;
+export default prisma

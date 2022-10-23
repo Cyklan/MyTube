@@ -39,8 +39,8 @@ Route.post('register', 'AuthenticationController.register')
 //#endregion
 
 //#region Admin routes
-Route.get("admin/get-accounts", "AdministratorController.getAccounts").middleware([
-  Middlewares.AdministratorAuthentication
+Route.get('admin/get-accounts', 'AdministratorController.getAccounts').middleware([
+  Middlewares.AdministratorAuthentication,
 ])
 Route.post('admin/create-account', 'AdministratorController.createAccount').middleware([
   Middlewares.AdministratorAuthentication,
@@ -48,9 +48,10 @@ Route.post('admin/create-account', 'AdministratorController.createAccount').midd
 Route.delete('admin/delete-account', 'AdministratorController.deleteAccount').middleware([
   Middlewares.AdministratorAuthentication,
 ])
-Route.patch('admin/update-account-password', 'AdministratorController.updateAccountPassword').middleware([
-  Middlewares.AdministratorAuthentication,
-])
+Route.patch(
+  'admin/update-account-password',
+  'AdministratorController.updateAccountPassword'
+).middleware([Middlewares.AdministratorAuthentication])
 Route.patch('admin/update-account-admin', 'AdministratorController.updateAccountAdmin').middleware([
   Middlewares.AdministratorAuthentication,
 ])
