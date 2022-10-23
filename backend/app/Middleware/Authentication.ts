@@ -2,12 +2,12 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import type { RequestContract } from '@ioc:Adonis/Core/Request'
 import { ErrorResponse } from 'App/ResponseMessages/ErrorResponse'
 import { JwtPayload, verify } from 'jsonwebtoken'
-import { getUserById } from 'App/utils/getUser';
+import { getUserById } from 'App/utils/getUser'
 import { User } from '@prisma/client'
 
 export default class Authentication {
   public async handle({ request, response }: HttpContextContract, next: () => Promise<void>) {
-    const jwt = this.getJwt(request);
+    const jwt = this.getJwt(request)
     if (!jwt) {
       return response.unauthorized(new ErrorResponse('Missing bearer token'))
     }
@@ -26,23 +26,23 @@ export default class Authentication {
       return response.unauthorized(new ErrorResponse('Unauthorized'))
     }
 
-    request["user"] = user
+    request['user'] = user
 
     await next()
   }
 
   protected canAuthenticate(_: User): boolean {
-    return true;
+    return true
   }
 
   protected getJwt(request: RequestContract) {
     const authHeader = request.headers().authorization
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null;
+      return null
     }
 
-   return authHeader.split(' ')[1]
+    return authHeader.split(' ')[1]
   }
 
   protected getPayload(jwt: string): JwtPayload | null {

@@ -34,4 +34,5 @@ model Video {
 model Settings {
   id                 Int @id @default(autoincrement())
   registrationActive Boolean
+  allowSelfAccountDeletion Boolean
 }

@@ -20,9 +20,10 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 import { Middlewares } from 'App/Middleware'
+import { hashPassword } from 'App/utils/hashPassword'
 
 Route.get('/', async () => {
-  return { hello: 'world' }
+  return { hello: await hashPassword('startPw+1') }
 })
 
 Route.get('/auth', async () => {
@@ -39,20 +40,19 @@ Route.post('register', 'AuthenticationController.register')
 //#endregion
 
 //#region Admin routes
-Route.get('admin/get-accounts', 'AdministratorController.getAccounts').middleware([
+Route.get('admin/get-users', 'AdministratorController.getUsers').middleware([
   Middlewares.AdministratorAuthentication,
 ])
-Route.post('admin/create-account', 'AdministratorController.createAccount').middleware([
+Route.post('admin/create-user', 'AdministratorController.createUser').middleware([
   Middlewares.AdministratorAuthentication,
 ])
-Route.delete('admin/delete-account', 'AdministratorController.deleteAccount').middleware([
+Route.delete('admin/delete-user', 'AdministratorController.deleteUser').middleware([
   Middlewares.AdministratorAuthentication,
 ])
-Route.patch(
-  'admin/update-account-password',
-  'AdministratorController.updateAccountPassword'
-).middleware([Middlewares.AdministratorAuthentication])
-Route.patch('admin/update-account-admin', 'AdministratorController.updateAccountAdmin').middleware([
+Route.patch('admin/update-user-password', 'AdministratorController.updateUserPassword').middleware([
+  Middlewares.AdministratorAuthentication,
+])
+Route.patch('admin/update-user-admin', 'AdministratorController.updateUserAdmin').middleware([
   Middlewares.AdministratorAuthentication,
 ])
 Route.patch('admin/update-settings', 'AdministratorController.updateSettings').middleware([
@@ -61,4 +61,16 @@ Route.patch('admin/update-settings', 'AdministratorController.updateSettings').m
 Route.delete('admin/delete-video', 'AdministratorController.deleteVideo').middleware([
   Middlewares.AdministratorAuthentication,
 ])
+//#endregion
+
+//#region
+Route.get('user', 'UserController.get').middleware([Middlewares.Authentication])
+Route.patch('user/subscribe', 'UserController.subscribe').middleware([Middlewares.Authentication])
+Route.patch('user/unsubscribe', 'UserController.unsubscribe').middleware([
+  Middlewares.Authentication,
+])
+Route.patch('user/update-password', 'UserController.updatePassword').middleware([
+  Middlewares.Authentication,
+])
+Route.delete('user/delete', 'UserController.delete').middleware([Middlewares.Authentication])
 //#endregion

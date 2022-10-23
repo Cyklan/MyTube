@@ -1,14 +1,11 @@
 import { PrismaClient } from '@prisma/client'
-import { hashPassword } from 'App/utils/hashPassword'
 const prisma = new PrismaClient()
 
 async function main() {
-  const password = await hashPassword('startpw+1')
-
   await prisma.user.create({
     data: {
       isAdmin: true,
-      password,
+      password: '$2b$10$FYf2M0h7wI14pBFU40Bvl.d.gX4ZIaihECg/uwIFuLXH7Z2m.sXHi',
       username: 'Admin',
     },
   })
@@ -16,6 +13,7 @@ async function main() {
   await prisma.settings.create({
     data: {
       registrationActive: true,
+      allowSelfAccountDeletion: true,
     },
   })
 }

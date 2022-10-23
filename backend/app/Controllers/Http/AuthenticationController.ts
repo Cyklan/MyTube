@@ -6,7 +6,7 @@ import { ErrorResponse } from 'App/ResponseMessages/ErrorResponse'
 import { sign } from 'jsonwebtoken'
 import { validatePasswordRequirements } from 'App/utils/validatePasswordRequirements'
 import { hashPassword } from 'App/utils/hashPassword'
-import { getUserByName } from 'App/utils/getUser';
+import { getUserByName } from 'App/utils/getUser'
 
 export default class AuthenticationController {
   public async login({ request, response }: HttpContextContract) {

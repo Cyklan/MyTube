@@ -9,13 +9,14 @@ import { hashPassword } from 'App/utils/hashPassword'
 import { validatePasswordRequirements } from 'App/utils/validatePasswordRequirements'
 
 export default class AdministratorController {
-  public async getAccounts({ response }: HttpContextContract) {
-    const accounts = await db.user.findMany()
+  public async getUsers({ response }: HttpContextContract) {
+    const users = await db.user.findMany()
+    users.forEach((user) => (user.password = ''))
 
-    return response.json(accounts)
+    return response.json(users)
   }
 
-  public async createAccount({ request, response }: HttpContextContract) {
+  public async createUser({ request, response }: HttpContextContract) {
     const { username, password, isAdmin } = request.only(['username', 'password', 'isAdmin']) as {
       username: string
       password: string
@@ -43,7 +44,7 @@ export default class AdministratorController {
     response.status(204).send('')
   }
 
-  public async deleteAccount({ request, response }: HttpContextContract) {
+  public async deleteUser({ request, response }: HttpContextContract) {
     const { userId } = request.only(['userId'])
 
     if (this.isASelfManipulation(request)) {
@@ -63,7 +64,7 @@ export default class AdministratorController {
     response.status(204).send('')
   }
 
-  public async updateAccountPassword({ request, response }: HttpContextContract) {
+  public async updateUserPassword({ request, response }: HttpContextContract) {
     const { userId, password } = request.only(['userId', 'password']) as {
       userId: string
       password: string
@@ -90,7 +91,7 @@ export default class AdministratorController {
     response.status(204).send('')
   }
 
-  public async updateAccountAdmin({ request, response }: HttpContextContract) {
+  public async updateUserAdmin({ request, response }: HttpContextContract) {
     const { userId, isAdmin } = request.only(['userId', 'isAdmin']) as {
       userId: string
       isAdmin: boolean
@@ -119,8 +120,12 @@ export default class AdministratorController {
   }
 
   public async updateSettings({ request, response }: HttpContextContract) {
-    const { registrationActive } = request.only(['registrationActive']) as {
+    const { registrationActive, allowSelfAccountDeletion } = request.only([
+      'registrationActive',
+      'allowSelfAccountDeletion',
+    ]) as {
       registrationActive: boolean
+      allowSelfAccountDeletion: boolean
     }
 
     if (registrationActive == null) {
@@ -133,7 +138,8 @@ export default class AdministratorController {
         id: settings?.id,
       },
       data: {
-        registrationActive,
+        registrationActive: registrationActive ?? undefined,
+        allowSelfAccountDeletion: allowSelfAccountDeletion ?? undefined,
       },
     })
 
