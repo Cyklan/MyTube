@@ -44,14 +44,13 @@ export default class UserController {
       return response.badRequest(new ErrorResponse('Invalid user'))
     }
 
-    // ? dafuq is this and how does it work, becaus this clearly does not
-    db.user.update({
+    await db.user.update({
       where: {
         id: user.id,
       },
       data: {
         subscribedTo: {
-          connect: { id: userToSubscribeTo.id, username: userToSubscribeTo.username },
+          connect: { id: userToSubscribeTo.id },
         },
       },
     })
