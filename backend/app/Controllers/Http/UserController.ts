@@ -50,13 +50,36 @@ export default class UserController {
       },
       data: {
         subscribedTo: {
-          connect: { id: userToSubscribeTo.id },
+          connect: { id: userId },
         },
       },
     })
+
+    response.status(204).send('')
   }
 
-  public async unsubscribe({ request, response }: HttpContextContract) {}
+  public async unsubscribe({ request, response }: HttpContextContract) {
+    const { userId } = request.only(['userId'])
+    const user = request['user'] as User
+    const userToSubscribeTo = await getUserById(userId)
+
+    if (userToSubscribeTo == null) {
+      return response.badRequest(new ErrorResponse('Invalid user'))
+    }
+
+    await db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        subscribedTo: {
+          disconnect: { id: userId }
+        },
+      },
+    })
+
+    response.status(204).send('')
+  }
 
   public async updatePassword({ request, response }: HttpContextContract) {
     const { password } = request.only(['password']) as {
