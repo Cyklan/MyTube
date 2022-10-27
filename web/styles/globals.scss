@@ -9,3 +9,7 @@ body {
   @apply p-0 m-0;
   font-family: Oswald, system-ui;
 }
+
+#__next {
+  min-height: calc(100vh - 5rem);
+}
