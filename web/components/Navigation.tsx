@@ -8,7 +8,7 @@ export const Navigation: FC = () => {
     <nav className="w-screen bg-base-300 border-b-base-200 h-20 rounded-b-xl shadow-lg flex fixed top-0 justify-between items-center">
       <Logo />
       <Search />
-      <AccountBubble />
+      <AccountBubble isLoggedIn={false} />
     </nav>
   );
 };
