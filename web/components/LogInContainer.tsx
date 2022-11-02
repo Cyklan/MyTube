@@ -1,10 +1,11 @@
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
+import { formDataToJSON } from "../utils/formDataToJSON";
 import { LoginForm } from "./LogInContainer/LoginForm";
 import { RegisterForm } from "./LogInContainer/RegisterForm";
 
 interface LogInContainer {
-  onLogin: () => void;
-  onRegister: () => void;
+  onLogin: (payload: string) => void;
+  onRegister: (payload: string) => void;
   registrationDisabled: boolean;
 }
 
@@ -21,17 +22,21 @@ export const LogInContainer: FC<LogInContainer> = ({
   const [containerState, setContainerState] = useState(
     LogInContainerStates.LogIn
   );
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <form
+      ref={formRef}
       className="card card-compact mt-20 w-96 bg-base-100 shadow-xl"
       onSubmit={(event) => {
         event.preventDefault();
+        const formData = new FormData(formRef.current ?? undefined);
+        const payload = formDataToJSON(formData);
         if (containerState === LogInContainerStates.LogIn) {
-          return onLogin();
+          return onLogin(payload);
         }
 
-        onRegister();
+        onRegister(payload);
       }}
     >
       <div className="card-body">

@@ -1,10 +1,11 @@
 import { FC, ReactNode } from "react";
+import { User } from "../model/User";
 import { Navigation } from "./Navigation";
 
-export const Layout: FC<{ children: ReactNode }> = ({ children }) => {
+export const Layout: FC<{ children: ReactNode, user?: User }> = ({ children, user }) => {
   return (
     <>
-      <Navigation />
+      <Navigation user={user} />
       <main className="mt-20 min-h-full h-full">{children}</main>
     </>
   );

@@ -64,7 +64,7 @@ Route.delete('admin/delete-video', 'AdministratorController.deleteVideo').middle
 //#endregion
 
 //#region
-Route.get('user', 'UserController.get').middleware([Middlewares.Authentication])
+Route.get('user', 'UserController.get')
 Route.patch('user/subscribe', 'UserController.subscribe').middleware([Middlewares.Authentication])
 Route.patch('user/unsubscribe', 'UserController.unsubscribe').middleware([
   Middlewares.Authentication,
